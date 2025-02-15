@@ -1,10 +1,52 @@
 <!DOCTYPE html>
+<html lang="fa">
 <head>
-    
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قیمت لحظه‌ای بیت‌کوین</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .bitcoin-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f7931a;
+        }
+        .bitcoin-logo {
+            width: 50px;
+            height: 50px;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
-    <img src="https://sabzlearn.ir/wp-content/uploads/2023/08/unnamed-file.html-1.jpg">
+    <div class="bitcoin-price">
+        <img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579" alt="Bitcoin Logo" class="bitcoin-logo">
+        <span id="bitcoin-price">در حال دریافت قیمت...</span>
+    </div>
 
+    <script>
+        // اتصال به WebSocket Binance
+        const socket = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const price = parseFloat(data.p).toFixed(2); // قیمت بیت‌کوین به دلار
+            document.getElementById('bitcoin-price').textContent = قیمت بیت‌کوین: $${price};
+        };
+
+        socket.onerror = function(error) {
+            console.error('خطا در اتصال به WebSocket:', error);
+            document.getElementById('bitcoin-price').textContent = 'خطا در دریافت قیمت';
+        };
+
+        socket.onclose = function() {
+            console.log('اتصال WebSocket بسته شد.');
+            document.getElementById('bitcoin-price').textContent = 'اتصال قطع شد';
+        };
+    </script>
 </body>
 </html>
