@@ -3,50 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قیمت لحظه‌ای بیت‌کوین</title>
+    <title>محاسبه شاخص توده بدنی</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Tahoma', sans-serif;
+            background: linear-gradient(135deg, #8e44ad, #3498db);
+            color: white;
             text-align: center;
-            margin-top: 50px;
+            padding: 20px;
         }
-        .bitcoin-price {
-            font-size: 24px;
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 10px;
+            background: #27ae60;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #219150;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 20px;
             font-weight: bold;
-            color: #f7931a;
-        }
-        .bitcoin-logo {
-            width: 50px;
-            height: 50px;
-            vertical-align: middle;
         }
     </style>
 </head>
 <body>
-    <div class="bitcoin-price">
-        <img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579" alt="Bitcoin Logo" class="bitcoin-logo">
-        <span id="bitcoin-price">در حال دریافت قیمت...</span>
+
+    <div class="container">
+        <h2>محاسبه شاخص توده بدنی (BMI)</h2>
+        <label>جنسیت:</label>
+        <select id="gender">
+            <option value="male">مرد</option>
+            <option value="female">زن</option>
+        </select>
+        
+        <label>سن:</label>
+        <input type="number" id="age" placeholder="مثلاً 25" min="1">
+        
+        <label>قد (سانتی‌متر):</label>
+        <input type="number" id="height" placeholder="مثلاً 170" min="50">
+        
+        <label>وزن (کیلوگرم):</label>
+        <input type="number" id="weight" placeholder="مثلاً 70" min="10">
+        
+        <button onclick="calculateBMI()">محاسبه</button>
+        
+        <div class="result" id="result"></div>
     </div>
 
     <script>
-        // اتصال به WebSocket Binance
-        const socket = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+        function calculateBMI() {
+            let gender = document.getElementById('gender').value;
+            let age = document.getElementById('age').value;
+            let height = document.getElementById('height').value;
+            let weight = document.getElementById('weight').value;
+            let resultDiv = document.getElementById('result');
 
-        socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            const price = parseFloat(data.p).toFixed(2); // قیمت بیت‌کوین به دلار
-            document.getElementById('bitcoin-price').textContent = قیمت بیت‌کوین: $${price};
-        };
+            if (!age  !height  !weight) {
+                resultDiv.innerHTML = "لطفاً تمام اطلاعات را وارد کنید.";
+                resultDiv.style.color = "red";
+                return;
+            }
 
-        socket.onerror = function(error) {
-            console.error('خطا در اتصال به WebSocket:', error);
-            document.getElementById('bitcoin-price').textContent = 'خطا در دریافت قیمت';
-        };
+            let heightInMeters = height / 100;
+            let bmi = (weight / (heightInMeters * heightInMeters)).toFixed(1);
+            let category = "";
 
-        socket.onclose = function() {
-            console.log('اتصال WebSocket بسته شد.');
-            document.getElementById('bitcoin-price').textContent = 'اتصال قطع شد';
-        };
+            if (bmi < 18.5) {
+                category = "کم‌وزن";
+                resultDiv.style.color = "#f39c12";
+            } else if (bmi >= 18.5 && bmi < 25) {
+                category = "وزن مناسب";
+                resultDiv.style.color = "#2ecc71";
+            } else if (bmi >= 25 && bmi < 30) {
+                category = "اضافه وزن";
+                resultDiv.style.color = "#e67e22";
+            } else {
+                category = "چاقی";
+                resultDiv.style.color = "#e74c3c";
+            }
+
+            resultDiv.innerHTML = شاخص BMI شما: <strong>${bmi}</strong><br> وضعیت: <strong>${category}</strong>;
+        }
     </script>
+
 </body>
 </html>
