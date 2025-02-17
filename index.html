@@ -79,20 +79,20 @@
         <label>وزن (کیلوگرم):</label>
         <input type="number" id="weight" placeholder="مثلاً 70" min="10">
         
-        <button onclick="calculateBMI()">محاسبه</button>
+        <button id="calculateBtn">محاسبه</button>
         
         <div class="result" id="result"></div>
     </div>
 
     <script>
-        function calculateBMI() {
-            let gender = document.getElementById('gender').value;
-            let age = document.getElementById('age').value;
-            let height = document.getElementById('height').value;
-            let weight = document.getElementById('weight').value;
-            let resultDiv = document.getElementById('result');
+        document.getElementById("calculateBtn").addEventListener("click", function () {
+            let gender = document.getElementById("gender").value;
+            let age = parseInt(document.getElementById("age").value);
+            let height = parseInt(document.getElementById("height").value);
+            let weight = parseInt(document.getElementById("weight").value);
+            let resultDiv = document.getElementById("result");
 
-            if (!age  !height  !weight) {
+            if (isNaN(age)  isNaN(height)  isNaN(weight)) {
                 resultDiv.innerHTML = "لطفاً تمام اطلاعات را وارد کنید.";
                 resultDiv.style.color = "red";
                 return;
@@ -117,7 +117,7 @@
             }
 
             resultDiv.innerHTML = شاخص BMI شما: <strong>${bmi}</strong><br> وضعیت: <strong>${category}</strong>;
-        }
+        });
     </script>
 
 </body>
